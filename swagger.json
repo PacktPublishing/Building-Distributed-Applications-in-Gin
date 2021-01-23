@@ -60,7 +60,6 @@
               "type": "string"
             },
             "x-go-name": "Tags",
-            "description": "type: array\nitems:\ntype: string",
             "name": "tags",
             "in": "query"
           },
