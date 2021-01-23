@@ -29,7 +29,9 @@ import (
 
 var recipes []Recipe
 
+// swagger:parameters recipes newRecipe
 type Recipe struct {
+	//swagger:ignore
 	ID           string    `json:"id"`
 	Name         string    `json:"name"`
 	Tags         []string  `json:"tags"`
