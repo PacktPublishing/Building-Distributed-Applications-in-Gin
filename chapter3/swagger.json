@@ -1,215 +1,146 @@
 {
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
-  "schemes": [
-    "http"
-  ],
-  "swagger": "2.0",
-  "info": {
-    "description": "This is a sample recipes API. You can find out more about the API at https://github.com/PacktPublishing/Building-Distributed-Applications-in-Gin.",
-    "title": "Recipes API",
-    "contact": {
-      "name": "Mohamed Labouardy",
-      "url": "https://labouardy.com",
-      "email": "mohamed@labouardy.com"
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "schemes": [
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a sample recipes API. You can find out more about the API at https://github.com/PacktPublishing/Building-Distributed-Applications-in-Gin.",
+        "title": "Recipes API",
+        "contact": {
+            "name": "Mohamed Labouardy",
+            "url": "https://labouardy.com",
+            "email": "mohamed@labouardy.com"
+        },
+        "version": "1.0.0"
     },
-    "version": "1.0.0"
-  },
-  "host": "localhost:8080",
-  "basePath": "/",
-  "paths": {
-    "/recipes": {
-      "get": {
-        "description": "Returns list of recipes",
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "recipes"
-        ],
-        "operationId": "listRecipes",
-        "responses": {
-          "200": {
-            "description": "Successful operation"
-          }
-        }
-      },
-      "post": {
-        "description": "Create a new recipe",
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "recipes"
-        ],
-        "operationId": "newRecipe",
-        "parameters": [
-          {
-            "type": "string",
-            "x-go-name": "Name",
-            "name": "name",
-            "in": "query"
-          },
-          {
-            "type": "array",
-            "items": {
-              "type": "string"
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/recipes": {
+            "get": {
+                "description": "Returns list of recipes",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "recipes"
+                ],
+                "operationId": "listRecipes",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
             },
-            "x-go-name": "Tags",
-            "name": "tags",
-            "in": "query"
-          },
-          {
-            "type": "array",
-            "items": {
-              "type": "string"
+            "post": {
+                "description": "Create a new recipe",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "recipes"
+                ],
+                "operationId": "newRecipe",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/recipes/search": {
+            "get": {
+                "description": "Search recipes based on tags",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "recipes"
+                ],
+                "operationId": "findRecipe",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "recipe tag",
+                        "name": "tag",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/recipes/{id}": {
+            "put": {
+                "description": "Update an existing recipe",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "recipes"
+                ],
+                "operationId": "updateRecipe",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the recipe",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    },
+                    "404": {
+                        "description": "Invalid recipe ID"
+                    }
+                }
             },
-            "x-go-name": "Ingredients",
-            "name": "ingredients",
-            "in": "query"
-          },
-          {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "x-go-name": "Instructions",
-            "name": "instructions",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "format": "date-time",
-            "x-go-name": "PublishedAt",
-            "name": "publishedAt",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful operation"
-          },
-          "400": {
-            "description": "Invalid input"
-          }
+            "delete": {
+                "description": "Delete an existing recipe",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "recipes"
+                ],
+                "operationId": "deleteRecipe",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the recipe",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "404": {
+                        "description": "Invalid recipe ID"
+                    }
+                }
+            }
         }
-      }
-    },
-    "/recipes/search": {
-      "get": {
-        "description": "Search recipes based on tags",
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "recipes"
-        ],
-        "operationId": "findRecipe",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "recipe tag",
-            "name": "tag",
-            "in": "query",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful operation"
-          }
-        }
-      }
-    },
-    "/recipes/{id}": {
-      "get": {
-        "description": "Get one recipe",
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "recipes"
-        ],
-        "operationId": "oneRecipe",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "ID of the recipe",
-            "name": "id",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful operation"
-          },
-          "404": {
-            "description": "Invalid recipe ID"
-          }
-        }
-      },
-      "put": {
-        "description": "Update an existing recipe",
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "recipes"
-        ],
-        "operationId": "updateRecipe",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "ID of the recipe",
-            "name": "id",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful operation"
-          },
-          "400": {
-            "description": "Invalid input"
-          },
-          "404": {
-            "description": "Invalid recipe ID"
-          }
-        }
-      },
-      "delete": {
-        "description": "Delete an existing recipe",
-        "produces": [
-          "application/json"
-        ],
-        "tags": [
-          "recipes"
-        ],
-        "operationId": "deleteRecipe",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "ID of the recipe",
-            "name": "id",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful operation"
-          },
-          "404": {
-            "description": "Invalid recipe ID"
-          }
-        }
-      }
     }
-  }
 }
