@@ -1,0 +1,34 @@
+<html>
+
+<head>
+    <title>{{ .recipe.Name }} - Recipes</title>
+    <link rel="stylesheet" href="/assets/css/app.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+</head>
+
+<body>
+    {{template "navbar.tmpl"}}
+
+    <section class="container recipe">
+        <div class="row">
+            <div class="col-md-3">
+                <img src="{{ .recipe.Picture }}" class="card-img-top">
+            </div>
+            <div class="col-md-9">
+                <h4>{{ .recipe.Name }}</h4>
+                <ul class="list-group list-steps">
+                    <li class="list-group-item active">Steps</li>
+                    {{range $step := .recipe.Steps }}
+                    <li class="list-group-item">{{$step}}</li>
+                    {{end}}
+                </ul>
+            </div>
+        </div>
+    </section>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
+    crossorigin="anonymous"></script>
+
+</html>

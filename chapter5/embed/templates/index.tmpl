@@ -1,0 +1,43 @@
+<html>
+
+<head>
+    <title>Recipes</title>
+    <link rel="stylesheet" href="/assets/css/app.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+</head>
+
+<body>
+    {{template "navbar.tmpl"}}
+
+    <section class="container">
+        <div class="row">
+            {{range .recipes}}
+            <div class="col-md-3">
+                <div class="card" style="width: 18rem;">
+                    <img src="{{ .Picture }}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ .Name }}</h5>
+                        {{range $ingredient := .Ingredients}}
+                        <span class="badge bg-danger ingredient">
+                            {{$ingredient.Name}}
+                        </span>
+                        {{end}}
+                        <ul class="steps">
+                            {{range $step := .Steps}}
+                            <li>{{$step}}</li>
+                            {{end}}
+                        </ul>
+                        <a href="/recipes/{{ .ID }}" class="btn btn-primary btn-sm">See recipe</a>
+                    </div>
+                </div>
+            </div>
+            {{end}}
+        </div>
+    </section>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
+    crossorigin="anonymous"></script>
+
+</html>

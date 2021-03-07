@@ -1,0 +1,54 @@
+.recipes {
+    width: 100%;
+}
+
+.recipe {
+    margin-top: 40px;
+}
+
+.list-steps {
+    overflow: scroll;
+    -webkit-overflow-scrolling: scroll;
+    margin-top: 10px;
+}
+
+.list-steps li {
+    font-size: 0.8rem;
+}
+
+.steps {
+    max-height: 200px;
+    overflow: scroll;
+    -webkit-overflow-scrolling: scroll;
+    margin-top: 10px;
+}
+
+.steps li {
+    font-size: 0.8rem;
+}
+
+.card {
+    margin-top: 20px;
+}
+
+.badge {
+    margin-top: 3px;
+}
+
+.logo img {
+    width: 30px;
+}
+
+.logo span {
+    color: #36A88E;
+    font-weight: bolder;
+    font-style: italic;
+}
+
+.not-found {
+    text-align: center;
+}
+
+.not-found h4 {
+    margin-top: 30px;
+}
