@@ -1,0 +1,16 @@
+.thumbnail {
+    width: 50px !important;
+}
+
+.title {
+    font-size: 1rem !important;
+}
+
+.see_recipe {
+    float: right !important;
+}
+
+.header {
+    margin-top: 20px !important;
+    margin-bottom: 20px !important;
+}

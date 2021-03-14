@@ -1,0 +1,30 @@
+<html>
+
+<head>
+    <title>Trending Recipes</title>
+    <link rel="stylesheet" href="/assets/css/app.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <section class="container">
+        <div class="row">
+            <h4 class="header">Trending recipes 😋</h4>
+            <ul class="list-group">
+                {{range .recipes}}
+                <li class="list-group-item">
+                    <div style="width: 100%;">
+                        <img src="{{ .Thumbnail }}" class="card-img-top thumbnail">
+                        <span class="title">{{ .Title }}</span>
+                        <a href="{{ .URL }}" target="_blank" class="btn btn-warning btn-sm see_recipe">See recipe</a>
+                    </div>
+                </li>
+                {{end}}
+            </ul>
+
+        </div>
+    </section>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"></script>
+
+</html>
