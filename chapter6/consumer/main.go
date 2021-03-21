@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"encoding/xml"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -91,8 +92,11 @@ func main() {
 
 			entries, _ := GetFeedEntries(request.URL)
 
+			fmt.Println(entries)
+
 			collection := mongoClient.Database(os.Getenv("MONGO_DATABASE")).Collection("recipes")
-			for _, entry := range entries[2:] {
+			fmt.Println(len(entries))
+			for _, entry := range entries {
 				collection.InsertOne(ctx, bson.M{
 					"title":     entry.Title,
 					"thumbnail": entry.Thumbnail.URL,
