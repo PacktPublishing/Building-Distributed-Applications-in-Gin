@@ -1,0 +1,19 @@
+version: "3.9" 
+
+services:
+  worker:
+    image: worker
+    environment:
+      - MONGO_URI=mongodb://admin:password@mongodb:27017/test?authSource=admin&readPreference=primary&ssl=false
+      - MONGO_DATABASE=demo2
+      - RABBITMQ_URI=amqp://user:password@rabbitmq:5672
+      - RABBITMQ_QUEUE=rss_urls
+    networks:
+      - app_network
+    external_links:
+      - mongodb
+      - rabbitmq
+
+networks:
+  app_network:
+    external: true
