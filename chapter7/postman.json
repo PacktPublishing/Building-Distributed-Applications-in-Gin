@@ -1,0 +1,111 @@
+{
+    "info": {
+        "_postman_id": "285a8115-f24d-4040-ac90-b60cd164fb5b",
+        "name": "Recipes API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "List Recipes",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"More than 10 recipes\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData.length).to.equal(10)",
+                            "});",
+                            "",
+                            "pm.test(\"Gnocchi recipe\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    var found = false;",
+                            "    jsonData.forEach(recipe => {",
+                            "        if (recipe.name == 'Gnocchi') {",
+                            "            found = true;",
+                            "        }",
+                            "    })",
+                            "    pm.expect(found).to.true",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{url}}/recipes",
+                    "host": [
+                        "{{url}}"
+                    ],
+                    "path": [
+                        "recipes"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "New Recipe",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Recipe ID is not null\", function(){",
+                            "    var id = pm.response.json().id;",
+                            "    pm.expect(id).to.be.a(\"string\");",
+                            "    pm.expect(id.length).to.eq(24);",
+                            "})"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"name\": \"New York Pizza\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "{{url}}/recipes",
+                    "host": [
+                        "{{url}}"
+                    ],
+                    "path": [
+                        "recipes"
+                    ]
+                }
+            },
+            "response": []
+        }
+    ],
+    "auth": {
+        "type": "basic",
+        "basic": [
+            {
+                "key": "password",
+                "value": "password",
+                "type": "string"
+            },
+            {
+                "key": "username",
+                "value": "admin",
+                "type": "string"
+            }
+        ]
+    }
+}

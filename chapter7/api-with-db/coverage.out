@@ -1,0 +1,8 @@
+mode: set
+github.com/mlabouardy/recipes-api/main.go:36.13,39.71 3 1
+github.com/mlabouardy/recipes-api/main.go:42.2,57.61 8 1
+github.com/mlabouardy/recipes-api/main.go:39.71,41.3 1 0
+github.com/mlabouardy/recipes-api/main.go:60.32,71.2 8 1
+github.com/mlabouardy/recipes-api/main.go:78.2,78.15 1 1
+github.com/mlabouardy/recipes-api/main.go:71.2,76.3 4 1
+github.com/mlabouardy/recipes-api/main.go:80.13,82.2 1 0

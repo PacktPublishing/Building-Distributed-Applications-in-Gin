@@ -23,6 +23,8 @@ services:
     image: redis
     networks:
       - api_network
+    ports:
+      - 6379:6379
 
   mongodb:
     image: mongo:4.4.3
