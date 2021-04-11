@@ -1,0 +1,60 @@
+version: "3.9" 
+
+services:
+  api:
+    image: api
+    environment:
+      - MONGO_URI=mongodb://admin:password@mongodb:27017/test?authSource=admin&readPreference=primary&ssl=false
+      - MONGO_DATABASE=demo
+      - REDIS_URI=redis:6379
+    networks:
+      - api_network
+    external_links:
+      - mongodb
+      - redis
+    scale: 5
+
+  dashboard:
+    image: dashboard
+    networks:
+      - api_network
+
+  redis:
+    image: redis
+    networks:
+      - api_network
+    ports:
+      - 6379:6379
+
+  mongodb:
+    image: mongo:4.4.3
+    networks:
+      - api_network
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+
+  nginx:
+    image: nginx
+    ports:
+      - 80:80
+    volumes:
+      - $PWD/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - api
+      - dashboard
+    networks:
+      - api_network
+  
+  reddit-trending:
+    image: web
+    environment:
+      - MONGO_URI=mongodb://admin:password@mongodb:27017/test?authSource=admin&readPreference=primary&ssl=false
+      - MONGO_DATABASE=demo2
+    networks:
+      - api_network
+
+networks:
+  api_network:

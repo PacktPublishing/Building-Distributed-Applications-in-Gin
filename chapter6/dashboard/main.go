@@ -37,7 +37,7 @@ func IndexHandler(c *gin.Context) {
 		recipes = append(recipes, recipe)
 	}
 
-	C.c.HTML(http.StatusOK, "index.tmpl", gin.H{
+	c.HTML(http.StatusOK, "index.tmpl", gin.H{
 		"recipes": recipes,
 	})
 }
