@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: dashboard
+  name: dashboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: dashboard
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.22.0 (955b78124)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: dashboard
+    spec:
+      containers:
+        - image: ID.dkr.ecr.eu-central-1.amazonaws.com/mlabouardy/dashboard:latest
+          name: dashboard
+          resources: {}
+      restartPolicy: Always
+status: {}

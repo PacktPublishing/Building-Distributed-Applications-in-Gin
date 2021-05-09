@@ -1,0 +1,59 @@
+version: "2" 
+
+services:
+  api:
+    image: ID.dkr.ecr.eu-central-1.amazonaws.com/mlabouardy/recipes-api:latest
+    environment:
+      - MONGO_URI=mongodb://admin:password@mongodb:27017/test?authSource=admin&readPreference=primary&ssl=false
+      - MONGO_DATABASE=demo
+      - REDIS_URI=redis:6379
+    logging:
+      driver: awslogs
+      options: 
+        awslogs-group: sandbox
+        awslogs-region: eu-central-1
+        awslogs-stream-prefix: api
+
+  dashboard:
+   image: ID.dkr.ecr.eu-central-1.amazonaws.com/mlabouardy/dashboard:latest
+   logging:
+      driver: awslogs
+      options: 
+        awslogs-group: sandbox
+        awslogs-region: eu-central-1
+        awslogs-stream-prefix: dashboard
+
+  redis:
+    image: redis
+    logging:
+      driver: awslogs
+      options: 
+        awslogs-group: sandbox
+        awslogs-region: eu-central-1
+        awslogs-stream-prefix: redis
+
+  mongodb:
+    image: mongo:4.4.3
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    logging:
+      driver: awslogs
+      options: 
+        awslogs-group: sandbox
+        awslogs-region: eu-central-1
+        awslogs-stream-prefix: mongodb
+
+  nginx:
+    image: ID.dkr.ecr.eu-central-1.amazonaws.com/mlabouardy/nginx:latest
+    ports:
+      - 80:80
+    depends_on:
+      - api
+      - dashboard
+    logging:
+      driver: awslogs
+      options: 
+        awslogs-group: sandbox
+        awslogs-region: eu-central-1
+        awslogs-stream-prefix: nginx

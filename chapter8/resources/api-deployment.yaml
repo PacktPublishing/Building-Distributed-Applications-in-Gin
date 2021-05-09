@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: api
+  name: api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: api
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.22.0 (955b78124)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: api
+    spec:
+      containers:
+        - env:
+            - name: MONGO_DATABASE
+              value: demo
+            - name: MONGO_URI
+              value: mongodb://admin:password@mongodb:27017/test?authSource=admin&readPreference=primary&ssl=false
+            - name: REDIS_URI
+              value: redis:6379
+          image: ID.dkr.ecr.eu-central-1.amazonaws.com/mlabouardy/recipes-api:latest
+          name: api
+          resources: {}
+      restartPolicy: Always
+status: {}
