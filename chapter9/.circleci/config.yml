@@ -1,0 +1,291 @@
+version: 2.1
+
+orbs:
+  slack: circleci/slack@4.1.1
+executors:
+  environment:
+    docker:
+      - image: circleci/golang:1.15
+    working_directory: /go/src/github.com/mlabouardy/recipes-api
+
+jobs:
+  test:
+    executor: environment
+    steps:
+      - slack/notify:
+          channel: "#ci"
+          event: always
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Build has started*! :crossed_fingers:"
+                  }
+                },
+                {
+                  "type": "divider"
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Project*:\n$CIRCLE_PROJECT_REPONAME"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*When*:\n$(date +'%m/%d/%Y %T')"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Branch*:\n$CIRCLE_BRANCH"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Author*:\n$CIRCLE_USERNAME"
+                    }
+                  ],
+                  "accessory": {
+                    "type": "image",
+                    "image_url": "https://media.giphy.com/media/3orieTfp1MeFLiBQR2/giphy.gif",
+                    "alt_text": "CircleCI logo"
+                  }
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "View Workflow"
+                      },
+                      "url": "https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}"
+                    }
+                  ]
+                }
+              ]
+            }
+      - checkout 
+      - restore_cache:
+          keys:
+            - go-mod-v4-{{ checksum "go.sum" }}
+      - run:
+          name: Install Dependencies
+          command: go mod download
+      - save_cache:
+          key: go-mod-v4-{{ checksum "go.sum" }}
+          paths:
+            - "/go/pkg/mod"
+      - run:
+          name: Code linting
+          command: >
+            go get -u golang.org/x/lint/golint
+            #golint ./...
+      - run:
+          name: Unit tests
+          command: | 
+            go test -v ./...
+            exit 1
+      - slack/notify:
+          channel: "#ci"
+          event: fail
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Tests failed, run for your life*! :fearful:"
+                  }
+                },
+                {
+                  "type": "divider"
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Project*:\n$CIRCLE_PROJECT_REPONAME"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*When*:\n$(date +'%m/%d/%Y %T')"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Branch*:\n$CIRCLE_BRANCH"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Author*:\n$CIRCLE_USERNAME"
+                    }
+                  ],
+                  "accessory": {
+                    "type": "image",
+                    "image_url": "https://media.tenor.com/images/645150dcfc0770e2b73ef458872d6e7a/tenor.gif",
+                    "alt_text": "CircleCI logo"
+                  }
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "View Job"
+                      },
+                      "url": "${CIRCLE_BUILD_URL}"
+                    }
+                  ]
+                }
+              ]
+            }
+
+  build:
+    executor: environment
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 19.03.13
+      - run:
+          name: Build image
+          command: |
+            TAG=0.1.$CIRCLE_BUILD_NUM
+            docker build -t mlabouardy/recipes-api:$TAG --build-arg API_VERSION=${TAG} .
+      - run:
+          name: Install AWS CLI
+          command: |
+           sudo  apt-get update
+           sudo apt-get install -y python3-pip
+           pip3 install awscli
+      - run:
+          name: Push image
+          command: |
+            TAG=0.1.$CIRCLE_BUILD_NUM
+            aws ecr get-login-password --region REGION | docker login --username AWS --password-stdin ID.dkr.ecr.REGION.amazonaws.com
+            docker tag mlabouardy/recipes-api:$TAG ID.dkr.ecr.REGION.amazonaws.com/mlabouardy/recipes-api:$TAG
+            docker push ID.dkr.ecr.REGION.amazonaws.com/mlabouardy/recipes-api:$TAG
+            if [ "${CIRCLE_BRANCH}" == "master" ] || [ "${CIRCLE_BRANCH}" == "preprod" ] || [ "${CIRCLE_BRANCH}" == "develop" ];
+            then
+              docker tag mlabouardy/recipes-api:$TAG ID.dkr.ecr.REGION.amazonaws.com/mlabouardy/recipes-api:$CIRCLE_BRANCH
+              docker push ID.dkr.ecr.REGION.amazonaws.com/mlabouardy/recipes-api:$CIRCLE_BRANCH
+            fi
+      - slack/notify:
+          channel: "#ci"
+          event: fail
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Build failed, run for your life*! :fearful:"
+                  }
+                },
+                {
+                  "type": "divider"
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Project*:\n$CIRCLE_PROJECT_REPONAME"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*When*:\n$(date +'%m/%d/%Y %T')"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Branch*:\n$CIRCLE_BRANCH"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Author*:\n$CIRCLE_USERNAME"
+                    }
+                  ],
+                  "accessory": {
+                    "type": "image",
+                    "image_url": "https://media.tenor.com/images/645150dcfc0770e2b73ef458872d6e7a/tenor.gif",
+                    "alt_text": "CircleCI logo"
+                  }
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "View Job"
+                      },
+                      "url": "${CIRCLE_BUILD_URL}"
+                    }
+                  ]
+                }
+              ]
+            }
+
+  deploy:
+    executor: environment
+    steps:
+      - run:
+          name: Deploy with Docker Compose
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "preprod" ]
+            then
+              ssh -oStrictHostKeyChecking=no ec2-user@IP "docker-compose pull && docker-compose up -d"
+            elif [ "${CIRCLE_BRANCH}" == "develop" ]
+            then
+              ssh -oStrictHostKeyChecking=no ec2-user@IP "docker-compose pull && docker-compose up -d"
+            fi
+
+  release:
+    executor: environment
+    steps:
+      - run:
+          name: Deploy with Docker Compose
+          command: |
+             ssh -oStrictHostKeyChecking=no ec2-user@IP "docker-compose pull && docker-compose up -d"
+
+workflows:
+  ci_cd:
+    jobs:
+      - test
+      - build:
+          requires:
+            - test
+      - deploy:
+          requires:
+            - test
+            - build
+          filters:
+            branches:
+              only:
+                - develop
+                - preprod
+      - pause_workflow:
+          requires:
+            - test
+            - build
+          type: approval
+          filters:
+            branches:
+              only:
+                - master
+      - release:
+          requires:
+            - pause_workflow
+          filters:
+            branches:
+              only:
+                - master

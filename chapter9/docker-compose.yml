@@ -1,0 +1,36 @@
+version: "3" 
+
+services:
+  api:
+    image: ID.dkr.ecr.eu-central-1.amazonaws.com/mlabouardy/recipes-api:develop
+    environment:
+      - MONGO_URI=mongodb://admin:password@mongodb:27017/test?authSource=admin&readPreference=primary&ssl=false
+      - MONGO_DATABASE=demo
+      - REDIS_URI=redis:6379
+    external_links:
+      - mongodb
+      - redis
+
+  dashboard:
+    image: ID.dkr.ecr.eu-central-1.amazonaws.com/mlabouardy/dashboard:develop
+
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+
+  mongodb:
+    image: mongo:4.4.3
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+
+  nginx:
+    image: ID.dkr.ecr.eu-central-1.amazonaws.com/mlabouardy/nginx:develop
+    ports:
+      - 80:80
+    depends_on:
+      - api
+      - dashboard
