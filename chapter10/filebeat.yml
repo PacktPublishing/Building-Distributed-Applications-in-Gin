@@ -1,0 +1,7 @@
+filebeat.inputs:
+- type: log
+  paths:
+    - /var/log/api/debug.log
+
+output.elasticsearch:
+  hosts: 'http://elasticsearch:9200'

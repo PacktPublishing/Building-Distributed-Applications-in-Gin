@@ -1,0 +1,109 @@
+version: "3" 
+
+services:
+  api:
+    build: .
+    environment:
+      - MONGO_URI=mongodb://admin:password@mongodb:27017/test?authSource=admin&readPreference=primary&ssl=false
+      - MONGO_DATABASE=demo
+      - REDIS_URI=redis:6379
+      - API_VERSION=1.0.0
+    ports:
+      - 8080:8080
+    external_links:
+      - mongodb
+      - redis
+      - logstash
+    restart: always
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://127.0.0.1:12201"
+        tag: "recipes-api"
+    networks:
+      - demo
+
+
+  redis:
+    image: redis
+    restart: always
+    networks:
+      - demo
+
+  mongodb:
+    image: mongo:4.4.3
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    restart: always
+    networks:
+      - demo
+  
+  prometheus:
+    image: prom/prometheus:v2.27.0
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+    restart: always
+    networks:
+      - demo
+
+  grafana:
+    image: grafana/grafana:7.5.6
+    ports:
+      - 3000:3000
+    restart: always
+    networks:
+      - demo
+
+  telegraf:
+    image: telegraf:latest
+    volumes:
+      - ./telegraf.conf:/etc/telegraf/telegraf.conf
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - demo
+  
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.12.1
+    command: logstash -f /etc/logstash/logstash.conf
+    volumes:
+      - ./logstash.conf:/etc/logstash/logstash.conf
+    networks:
+      - demo
+    ports:
+      - "5000:5000"
+      - "12201:12201"
+      - "12201:12201/udp"
+    
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.12.1
+    ports:
+      - 9200:9200
+    environment:
+      - discovery.type=single-node
+    networks:
+      - demo
+    restart: always
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.12.1
+    ports:
+      - 5601:5601
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    networks:
+      - demo
+  
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:7.12.1
+    volumes:
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - ./debug.log:/var/log/api/debug.log
+    networks:
+      - demo
+
+networks:
+  demo:
+    driver: bridge

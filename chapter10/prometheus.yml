@@ -1,0 +1,17 @@
+global:
+  scrape_interval:     15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: ['localhost:9090']
+  - job_name: recipes-api 
+    metrics_path: /prometheus
+    static_configs:
+      - targets:
+        - api:8080
+  - job_name: telegraf
+    scrape_interval: 15s
+    static_configs:
+      - targets: ['telegraf:9100']
