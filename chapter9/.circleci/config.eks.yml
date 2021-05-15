@@ -1,0 +1,28 @@
+version: 2.1 
+ 
+orbs: 
+  aws-eks: circleci/aws-eks@0.2.0
+  kubernetes: circleci/kubernetes@0.3.0
+ 
+jobs:
+  deploy:
+    executor: aws-eks/python3
+    steps:
+      - checkout
+      - aws-eks/update-kubeconfig-with-authenticator:
+          cluster-name: sandbox
+          install-kubectl: true
+          aws-region: AWS_DEFAULT_REGION
+      - kubernetes/create-or-update-resource:
+          resource-file-path: "deployment/api.deployment.yaml"
+          get-rollout-status: true
+          resource-name: deployment/api
+      - kubernetes/create-or-update-resource:
+          resource-file-path: "deployment/api.service.yaml"
+          
+workflows: 
+ ci_cd: 
+  jobs: 
+   - test 
+   - build 
+   - deploy

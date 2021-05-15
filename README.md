@@ -1,7 +1,6 @@
 # Building-Distributed-Applications-in-Gin
 Building Distributed Applications in Gin, published by Packt
 
-
 ## Instructions and Navigations
 All of the code is organized into folders. For example, chapter1.
 

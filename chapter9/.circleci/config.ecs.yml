@@ -1,0 +1,15 @@
+version: 2.1 
+ 
+orbs: 
+ aws-ecs: circleci/aws-ecs@0.0.11 
+ 
+workflows: 
+ ci_cd: 
+  jobs: 
+   - test 
+   - build 
+   - aws-ecs/deploy-service-update: 
+      aws-region: AWS_DEFAULT_REGION 
+      family: 'demo' 
+      cluster-name: 'sandbox' 
+      container-image-name-updates: 'container=api,tag=0.1.${CIRCLE_BUILD_NUM}' 
