@@ -1,0 +1,58 @@
+version: 2.1
+
+executors:
+  environment:
+    docker:
+      - image: node:lts
+    working_directory: /dashboard
+
+jobs:
+  build:
+    executor: environment
+    steps:
+      - checkout
+      - restore_cache:
+          key: node-modules-{{checksum "package.json"}}
+      - run:
+          name: Install dependencies
+          command: npm install
+      - save_cache:
+          key: node-modules-{{checksum "package.json"}}
+          paths:
+            - node_modules
+      - run:
+          name: Build artifact
+          command: CI=false npm run build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - build
+
+  deploy:
+    executor: environment
+    steps:
+      - attach_workspace:
+          at: dist
+      - run:
+          name: Install AWS CLI
+          command: |
+            apt-get update
+            apt-get install -y python3-pip
+            pip3 install awscli
+      - run:
+          name: Push to S3 bucket
+          command: |
+            cd dist/build/dashboard/
+            aws configure set preview.cloudfront true
+            aws s3 cp --recursive . s3://YOUR_S3_BUCKET/ --region YOUR_AWS_REGION
+workflows:
+  ci_cd:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - master
