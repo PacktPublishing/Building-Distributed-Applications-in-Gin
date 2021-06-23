@@ -7,7 +7,11 @@ This is the code repository for [Building Distributed Applications in Gin](https
 **A hands-on guide for Go developers to build and deploy distributed web apps with the Gin framework.**
 
 ## What is this book about?
-0
+Gin is a high-performance HTTP web framework used to build web applications and microservices in Go. This book is designed to teach you the ins and outs of the Gin framework with the help of practical examples.
+
+You’ll start by exploring the basics of the Gin framework, before progressing to build a real-world RESTful API. Along the way, you’ll learn how to write custom middleware and understand the routing mechanism, as well as how to bind user data and validate incoming HTTP requests. The book also demonstrates how to store and retrieve data at scale with a NoSQL database such as MongoDB, and how to implement a caching layer with Redis. Next, you’ll understand how to secure and test your API endpoints with authentication protocols such as OAuth 2 and JWT. Later chapters will guide you through rendering HTML templates on the server-side and building a frontend application with the React web framework to consume API responses. Finally, you’ll deploy your application on Amazon Web Services (AWS) and learn how to automate the deployment process with a CI/CD pipeline.
+
+By the end of this Gin book, you will be able to design, build, and deploy a production-ready distributed application from scratch using the Gin framework.
 
 This book covers the following exciting features:
 Build a production-ready REST API with the Gin framework
