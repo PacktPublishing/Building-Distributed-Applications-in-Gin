@@ -61,6 +61,5 @@ We also provide a PDF file that has color images of the screenshots/diagrams use
 * Hands-On High Performance with Go [[Packt]](https://www.packtpub.com/product/hands-on-high-performance-with-go/9781789805789?utm_source=github&utm_medium=repository&utm_campaign=9781789805789) [[Amazon]](https://www.amazon.com/dp/1789805783)
 
 ## Get to Know the Author
-**Mohamed Labouardy**
-Mohamed Labouardy is the CTO and co-founder of Crew, and a DevSecOps evangelist. He is the founder of Komiser, a regular conference speaker, and author of several books around Serverless and Distributed Applications. He is also a contributor to numerous open-source projects such as Jenkins, Docker, and Telegraf. You can find him on Twitter at @mlabouardy.
+**Mohamed Labouardy** is the CTO and co-founder of Crew, and a DevSecOps evangelist. He is the founder of Komiser, a regular conference speaker, and author of several books around Serverless and Distributed Applications. He is also a contributor to numerous open-source projects such as Jenkins, Docker, and Telegraf. You can find him on Twitter at @mlabouardy.
 
