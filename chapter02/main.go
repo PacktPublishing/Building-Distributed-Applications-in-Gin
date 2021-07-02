@@ -210,6 +210,7 @@ func GetRecipeHandler(c *gin.Context) {
 	for i := 0; i < len(recipes); i++ {
 		if recipes[i].ID == id {
 			c.JSON(http.StatusOK, recipes[i])
+			return
 		}
 	}
 
