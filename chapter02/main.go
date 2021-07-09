@@ -106,7 +106,8 @@ func UpdateRecipeHandler(c *gin.Context) {
 	index := -1
 	for i := 0; i < len(recipes); i++ {
 		if recipes[i].ID == id {
-			index = i
+			index = i 
+			break
 		}
 	}
 
@@ -143,6 +144,7 @@ func DeleteRecipeHandler(c *gin.Context) {
 	for i := 0; i < len(recipes); i++ {
 		if recipes[i].ID == id {
 			index = i
+			break
 		}
 	}
 
