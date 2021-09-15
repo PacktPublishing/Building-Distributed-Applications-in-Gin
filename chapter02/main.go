@@ -208,7 +208,7 @@ func SearchRecipesHandler(c *gin.Context) {
 //     '404':
 //         description: Invalid recipe ID
 func GetRecipeHandler(c *gin.Context) {
-	id := c.Query("id")
+	id := c.Param("id")
 	for i := 0; i < len(recipes); i++ {
 		if recipes[i].ID == id {
 			c.JSON(http.StatusOK, recipes[i])
