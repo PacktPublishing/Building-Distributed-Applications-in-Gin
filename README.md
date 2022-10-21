@@ -63,3 +63,7 @@ We also provide a PDF file that has color images of the screenshots/diagrams use
 ## Get to Know the Author
 **Mohamed Labouardy** is the CTO and co-founder of Crew, and a DevSecOps evangelist. He is the founder of Komiser, a regular conference speaker, and author of several books around Serverless and Distributed Applications. He is also a contributor to numerous open-source projects such as Jenkins, Docker, and Telegraf. You can find him on Twitter at @mlabouardy.
 
+### Download a free PDF
+
+ <i>If you have already purchased a print or Kindle version of this book, you can get a DRM-free PDF version at no cost.<br>Simply click on the link to claim your free PDF.</i>
+<p align="center"> <a href="https://packt.link/free-ebook/9781801074858">https://packt.link/free-ebook/9781801074858 </a> </p>
