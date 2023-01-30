@@ -106,7 +106,7 @@ func UpdateRecipeHandler(c *gin.Context) {
 	index := -1
 	for i := 0; i < len(recipes); i++ {
 		if recipes[i].ID == id {
-			index = i 
+			index = i
 			break
 		}
 	}
@@ -116,6 +116,8 @@ func UpdateRecipeHandler(c *gin.Context) {
 		return
 	}
 
+    recipe.ID = recipes[index].ID
+    recipe.PublishedAt = recipes[index].PublishedAt
 	recipes[index] = recipe
 
 	c.JSON(http.StatusOK, recipe)
