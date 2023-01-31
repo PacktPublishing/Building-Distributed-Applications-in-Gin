@@ -102,7 +102,8 @@ func UpdateRecipeHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
+	
+	recipe.ID = id    // This line "save" our ID.
 	index := -1
 	for i := 0; i < len(recipes); i++ {
 		if recipes[i].ID == id {
