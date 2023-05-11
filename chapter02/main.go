@@ -117,8 +117,9 @@ func UpdateRecipeHandler(c *gin.Context) {
 	}
 
 	recipes[index] = recipe
+	recipes[index].ID = id
 
-	c.JSON(http.StatusOK, recipe)
+	c.JSON(http.StatusOK, recipes[index])
 }
 
 // swagger:operation DELETE /recipes/{id} recipes deleteRecipe
