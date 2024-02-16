@@ -5,11 +5,13 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"os"
+	"regexp"
 
+	"github.com/joho/godotenv"
 	"github.com/streadway/amqp"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -28,15 +30,13 @@ type Entry struct {
 	Link struct {
 		Href string `xml:"href,attr"`
 	} `xml:"link"`
-	Thumbnail struct {
-		URL string `xml:"url,attr"`
-	} `xml:"thumbnail"`
-	Title string `xml:"title"`
+	Content string `xml:"content"`
+	Title   string `xml:"title"`
 }
 
-func GetFeedEntries(url string) ([]Entry, error) {
+func GetFeedEntries(feedURL string) ([]Entry, error) {
 	httpClient := &http.Client{}
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest("GET", feedURL, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -48,14 +48,29 @@ func GetFeedEntries(url string) ([]Entry, error) {
 	}
 	defer resp.Body.Close()
 
-	byteValue, _ := ioutil.ReadAll(resp.Body)
+	byteValue, _ := io.ReadAll(resp.Body)
 	var feed Feed
 	xml.Unmarshal(byteValue, &feed)
+
+	imgRegex := regexp.MustCompile(`https://i\.redd\.it/\w+\.(jpeg|jpg|png|gif)`)
+
+	for i, entry := range feed.Entries {
+		matches := imgRegex.FindStringSubmatch(entry.Content)
+		if len(matches) > 0 {
+			feed.Entries[i].Content = matches[0]
+		} else {
+			feed.Entries[i].Content = "default_img_url"
+		}
+	}
 
 	return feed.Entries, nil
 }
 
 func main() {
+	err := godotenv.Load("local.env")
+	if err != nil {
+		log.Fatal("Error loading the .env file")
+	}
 	ctx := context.Background()
 	mongoClient, _ := mongo.Connect(ctx, options.Client().ApplyURI(os.Getenv("MONGO_URI")))
 	defer mongoClient.Disconnect(ctx)
@@ -80,7 +95,9 @@ func main() {
 		false,
 		nil,
 	)
-
+	if err != nil {
+		log.Fatal(err)
+	}
 	go func() {
 		for d := range msgs {
 			log.Printf("Received a message: %s", d.Body)
@@ -97,9 +114,13 @@ func main() {
 			collection := mongoClient.Database(os.Getenv("MONGO_DATABASE")).Collection("recipes")
 			fmt.Println(len(entries))
 			for _, entry := range entries {
+				thumbnail := entry.Content
+				if thumbnail == "" {
+					thumbnail = "default_image_url"
+				}
 				collection.InsertOne(ctx, bson.M{
 					"title":     entry.Title,
-					"thumbnail": entry.Thumbnail.URL,
+					"thumbnail": thumbnail,
 					"url":       entry.Link.Href,
 				})
 			}
